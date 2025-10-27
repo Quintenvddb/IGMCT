@@ -299,6 +299,22 @@
             "gateTerminal", "landmine", "beacon", "beaconTerminal"
         ];
         const TILE_LABELS = Object.fromEntries(TILE_IDS.map(t => [t, t]));
+        const TILE_DESCRIPTIONS = {
+            empty: "An empty space.",
+            enemy: "Places an enemy at this location.",
+            reactor: "Secondary objective structure",
+            turbine: "Secondary objective.",
+            wall: "A solid barrier that blocks movement",
+            player: "Starting position of the player mech.",
+            repairStation: "Heals the player when entered, has 2 charges",
+            upgradeStation: "Allows the player to upgrade either their heat or energy.",
+            gateClosed: "A closed gate blocking passage. (Opens when a gateTerminal is accessed)",
+            gateOpen: "An open gate that allows passage. (Closes when a gateTerminal is accessed)",
+            gateTerminal: "A console that can open/close gates.",
+            landmine: "Explodes when a unit steps on it.",
+            beacon: "Makes all the enemies in the mission stronger, can be disbaled using a beaconTerminal",
+            beaconTerminal: "Disables a beacon"
+        };
 
         let grid = [], gridW = 5, gridH = 5;
         let selectedTile = "empty", tool = "place", enemyCount = 0;
@@ -325,6 +341,9 @@
                 const b = document.createElement("button");
                 b.className = "tile-btn btn btn-sm";
                 b.textContent = TILE_LABELS[id];
+                b.setAttribute("data-bs-toggle", "tooltip");
+                b.setAttribute("data-bs-placement", "right");
+                b.setAttribute("title", TILE_DESCRIPTIONS[id] || id);
                 b.addEventListener("click", () => {
                     selectedTile = id;
                     document.querySelectorAll(".tile-btn").forEach(x => x.classList.remove("selected"));
@@ -344,6 +363,9 @@
             renderGrid();
             renderEnemyList();
         }
+
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.map(el => new bootstrap.Tooltip(el));
 
         function renderGrid() {
             gridContainer.innerHTML = "";
