@@ -274,7 +274,8 @@
             <div class="d-flex gap-2">
                 <button id="exportJSON" class="btn btn-primary btn-sm">Generate JSON</button>
                 <button id="downloadJSON" class="btn btn-secondary btn-sm">Download JSON</button>
-                <input id="loadFile" type="file" accept="application/json" class="form-control form-control-sm" style="width:auto"/>
+                <input id="loadFile" type="file" accept="application/json" class="form-control form-control-sm"
+                       style="width:auto"/>
             </div>
         </div>
     </div>
@@ -446,9 +447,9 @@
 
         function removeEnemy(k) {
             if (!enemies[k]) return;
-            
+
             delete enemies[k];
-            
+
             for (let y = 0; y < gridH; y++) {
                 for (let x = 0; x < gridW; x++) {
                     if (grid[y][x] === k) {
@@ -500,6 +501,18 @@
 
                 type.addEventListener("change", () => enemies[k].type = type.value);
 
+                const element = document.createElement("select");
+                element.className = "form-select form-select-sm";
+                element.style.width = "100px";
+                ["Physical", "Electric", "Explosive"].forEach(opt => {
+                    const o = document.createElement("option");
+                    o.value = opt;
+                    o.textContent = opt;
+                    if (enemies[k].element === opt) o.selected = true;
+                    element.appendChild(o);
+                });
+                element.addEventListener("change", () => enemies[k].element = element.value);
+
                 const rm = document.createElement("button");
                 rm.textContent = "X";
                 rm.className = "btn btn-sm btn-danger small-btn";
@@ -509,8 +522,10 @@
                     renderEnemyList();
                 });
 
-                r.append(lbl, id, type, rm);
+                r.append(lbl, id, type, element, rm);
                 enemyListEl.appendChild(r);
+
+                if (!enemies[k].element) enemies[k].element = "Physical";
             });
         }
 
@@ -519,7 +534,7 @@
 
             const enemiesOut = {};
             for (const [k, v] of Object.entries(enemies))
-                enemiesOut[k] = {id: v.id, type: v.type};
+                enemiesOut[k] = {id: v.id, type: v.type, element: v.element};
 
             const rewards = {
                 firstTimeClear: {
@@ -620,14 +635,14 @@
         };
         exportBtn.onclick = exportJSON;
         downloadBtn.onclick = download;
-        
+
         function loadMissionFromJSON(data) {
             if (!data) return;
             missionKeyEl.value = data.key || "";
             missionNameEl.value = data.name || "";
             energyCostEl.value = data.energyCost || 0;
             elementEl.value = data.element || "Physical";
-            
+
             const r = data.rewards;
             if (r) {
                 const ftc = r.firstTimeClear, nc = r.normalClear;
@@ -647,24 +662,24 @@
                 document.getElementById("ncVoidMin").value = nc.VoidStone.min;
                 document.getElementById("ncVoidMax").value = nc.VoidStone.max;
             }
-            
+
             gridW = data.gridWidth || 5;
             gridH = data.gridHeight || 5;
             gridWEl.value = gridW;
             gridHEl.value = gridH;
             grid = data.grid ? data.grid.map(row => [...row]) : [];
             renderGrid();
-            
+
             for (const k in enemies) delete enemies[k];
             enemyCount = 0;
             if (data.enemies) {
                 for (const [k, v] of Object.entries(data.enemies)) {
-                    enemies[k] = { id: v.id, type: v.type };
+                    enemies[k] = {id: v.id, type: v.type};
                     enemyCount = Math.max(enemyCount, parseInt(k.replace(/\D/g, "")) || 0);
                 }
             }
             renderEnemyList();
-            
+
             for (let y = 0; y < gridH; y++) {
                 for (let x = 0; x < gridW; x++) {
                     const c = gridContainer.querySelector(`.cell[data-x="${x}"][data-y="${y}"]`);
@@ -674,7 +689,7 @@
 
             jsonOutput.textContent = JSON.stringify(data, null, 2);
         }
-        
+
         loadFileInput.addEventListener("change", e => {
             const file = e.target.files[0];
             if (!file) return;
@@ -690,7 +705,7 @@
             reader.readAsText(file);
             e.target.value = "";
         });
-        
+
         makeGridBtn.onclick = () => makeGrid(+gridWEl.value || 5, +gridHEl.value || 5);
         clearGridBtn.onclick = () => {
             for (let y = 0; y < gridH; y++)
