@@ -134,7 +134,7 @@
 </head>
 
 <body>
-<h1 class="mb-4">Iron Giants Mission Creation Tool v0.0.3</h1>
+<h1 class="mb-4">Iron Giants Mission Creation Tool v0.0.4</h1>
 <div class="row g-3">
     <div class="col-md-5">
         <div class="panel">
@@ -319,7 +319,7 @@
         };
 
         let grid = [], gridW = 5, gridH = 5;
-        let selectedTile = "empty", tool = "place", enemyCount = 0;
+        let selectedTile = "empty", enemyCount = 0;
         const enemies = {};
 
         const paletteEl = document.getElementById("palette"),
@@ -417,7 +417,7 @@
             }
         }
 
-        function onClick(x, y, c) {
+        function onClick(x, y) {
             if (selectedTile === "enemy") {
                 enemyCount++;
                 const key = `enemy${enemyCount}`;
@@ -574,7 +574,7 @@
             };
 
             const mission = {
-                version: "0.0.3",
+                version: "0.0.4",
                 key: missionKeyEl.value || "mission_1",
                 name: missionNameEl.value || "",
                 energyCost: Number(energyCostEl.value) || 0,
