@@ -264,6 +264,7 @@
             <div class="mb-3">
                 <label class="form-label">Tile palette</label>
                 <div class="palette mb-1" id="palette"></div>
+                <div id="tileDescription" class="mt-2 text small"></div>
             </div>
 
             <div class="mb-3">
@@ -274,8 +275,7 @@
             <div class="d-flex gap-2">
                 <button id="exportJSON" class="btn btn-primary btn-sm">Generate JSON</button>
                 <button id="downloadJSON" class="btn btn-secondary btn-sm">Download JSON</button>
-                <input id="loadFile" type="file" accept="application/json" class="form-control form-control-sm"
-                       style="width:auto"/>
+                <input id="loadFile" type="file" accept="application/json" class="form-control form-control-sm"/>
             </div>
         </div>
     </div>
@@ -344,15 +344,19 @@
                 const b = document.createElement("button");
                 b.className = "tile-btn btn btn-sm";
                 b.textContent = TILE_LABELS[id];
-                b.setAttribute("data-bs-toggle", "tooltip");
-                b.setAttribute("data-bs-placement", "right");
-                b.setAttribute("title", TILE_DESCRIPTIONS[id] || id);
+
                 b.addEventListener("click", () => {
                     selectedTile = id;
                     document.querySelectorAll(".tile-btn").forEach(x => x.classList.remove("selected"));
                     b.classList.add("selected");
+                    document.getElementById("tileDescription").textContent = TILE_DESCRIPTIONS[id];
                 });
-                if (id === selectedTile) b.classList.add("selected");
+
+                if (id === selectedTile) {
+                    b.classList.add("selected");
+                    document.getElementById("tileDescription").textContent = TILE_DESCRIPTIONS[id];
+                }
+
                 paletteEl.appendChild(b);
             });
         }
