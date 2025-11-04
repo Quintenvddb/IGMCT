@@ -134,7 +134,7 @@
 </head>
 
 <body>
-<h1 class="mb-4">Iron Giants Mission Creation Tool v0.0.4</h1>
+<h1 class="mb-4">Iron Giants Mission Creation Tool v0.0.5</h1>
 <div class="row g-3">
     <div class="col-md-5">
         <div class="panel">
@@ -159,6 +159,18 @@
                         <option value="Physical">Physical</option>
                         <option value="Electric">Electric</option>
                         <option value="Explosive">Explosive</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row g-2 mb-3">
+                <div class="col-6">
+                    <label class="form-label">Mission Biome</label>
+                    <select id="biome" class="form-select form-select-sm">
+                        <option value="Forest">Forest</option>
+                        <option value="Tundra">Tundra</option>
+                        <option value="Desert">Desert</option>
+                        <option value="Volcanic">Volcanic</option>
+                        <option value="Swamp">Swamp</option>
                     </select>
                 </div>
             </div>
@@ -574,11 +586,12 @@
             };
 
             const mission = {
-                version: "0.0.4",
+                version: "0.0.5",
                 key: missionKeyEl.value || "mission_1",
                 name: missionNameEl.value || "",
                 energyCost: Number(energyCostEl.value) || 0,
                 element: elementEl.value || "",
+                biome: document.getElementById("biome").value || "",
                 gridWidth: gridW,
                 gridHeight: gridH,
                 grid: outGrid,
@@ -665,6 +678,7 @@
                 document.getElementById("ncCrytiteMax").value = nc.Crytite.max;
                 document.getElementById("ncVoidMin").value = nc.VoidStone.min;
                 document.getElementById("ncVoidMax").value = nc.VoidStone.max;
+                document.getElementById("biome").value = data.biome || "Forest";
             }
 
             gridW = data.gridWidth || 5;
