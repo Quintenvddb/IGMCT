@@ -134,7 +134,7 @@
 </head>
 
 <body>
-<h1 class="mb-4">Iron Giants Mission Creation Tool v0.0.5</h1>
+<h1 class="mb-4">Iron Giants Mission Creation Tool v0.0.6</h1>
 <div class="row g-3">
     <div class="col-md-5">
         <div class="panel">
@@ -320,18 +320,18 @@
             turbine: "Secondary objective.",
             wall: "A solid barrier that blocks movement",
             player: "Starting position of the player mech.",
-            repairStation: "Heals the player when entered, has 2 charges",
+            repairStation: "Heals the player when interacted with, has 2 charges",
             upgradeStation: "Allows the player to upgrade either their heat or energy.",
             gateClosed: "A closed gate blocking passage. (Opens when a gateTerminal is accessed)",
             gateOpen: "An open gate that allows passage. (Closes when a gateTerminal is accessed)",
             gateTerminal: "A console that can open/close gates.",
             landmine: "Explodes when a unit steps on it.",
-            beacon: "Makes all the enemies in the mission stronger, can be disbaled using a beaconTerminal",
+            beacon: "Makes all the enemies in the mission stronger, can be disabled using a beaconTerminal",
             beaconTerminal: "Disables a beacon"
         };
 
         let grid = [], gridW = 5, gridH = 5;
-        let selectedTile = "empty", enemyCount = 0;
+        let selectedTile = "empty", enemyCount = 0, repairStationCount = 0;
         const enemies = {};
 
         const paletteEl = document.getElementById("palette"),
@@ -405,6 +405,9 @@
                         const cur = grid[y][x];
                         if (cur.startsWith("enemy")) {
                             removeEnemy(cur);
+                        } else if (cur.startsWith("repairStation")) {
+                            repairStationCount = Math.max(0, repairStationCount - 1);
+                            setCell(x, y, "empty");
                         } else {
                             setCell(x, y, "empty");
                         }
@@ -450,9 +453,26 @@
                 }
             }
 
+            if (selectedTile === "beacon") {
+                for (let yy = 0; yy < gridH; yy++) {
+                    for (let xx = 0; xx < gridW; xx++) {
+                        if (grid[yy][xx] === "beacon") {
+                            setCell(xx, yy, "empty");
+                        }
+                    }
+                }
+            }
+
             const cur = grid[y][x];
             if (cur.startsWith("enemy")) removeEnemy(cur);
-            setCell(x, y, selectedTile);
+
+            if (selectedTile === "repairStation") {
+                repairStationCount++;
+                const key = `repairStation${repairStationCount}`;
+                setCell(x, y, key);
+            } else {
+                setCell(x, y, selectedTile);
+            }
         }
 
         function setCell(x, y, v) {
@@ -586,7 +606,7 @@
             };
 
             const mission = {
-                version: "0.0.5",
+                version: "0.0.6",
                 key: missionKeyEl.value || "mission_1",
                 name: missionNameEl.value || "",
                 energyCost: Number(energyCostEl.value) || 0,
@@ -647,6 +667,7 @@
                     grid[y][x] = "empty";
             for (const k in enemies) delete enemies[k];
             enemyCount = 0;
+            repairStationCount = 0;
             renderGrid();
             renderEnemyList();
         };
