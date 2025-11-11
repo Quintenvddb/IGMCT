@@ -134,7 +134,7 @@
 </head>
 
 <body>
-<h1 class="mb-4">Iron Giants Mission Creation Tool v0.0.6</h1>
+<h1 class="mb-4">Iron Giants Mission Creation Tool v0.0.7</h1>
 <div class="row g-3">
     <div class="col-md-5">
         <div class="panel">
@@ -331,7 +331,7 @@
         };
 
         let grid = [], gridW = 5, gridH = 5;
-        let selectedTile = "empty", enemyCount = 0, repairStationCount = 0;
+        let selectedTile = "empty", enemyCount = 0, repairStationCount = 0, upgradeStationCount = 0;
         const enemies = {};
 
         const paletteEl = document.getElementById("palette"),
@@ -408,6 +408,9 @@
                         } else if (cur.startsWith("repairStation")) {
                             repairStationCount = Math.max(0, repairStationCount - 1);
                             setCell(x, y, "empty");
+                        } else if (cur.startsWith("upgradeStation")) {
+                            upgradeStationCount = Math.max(0, upgradeStationCount - 1);
+                            setCell(x, y, "empty");
                         } else {
                             setCell(x, y, "empty");
                         }
@@ -466,7 +469,11 @@
             const cur = grid[y][x];
             if (cur.startsWith("enemy")) removeEnemy(cur);
 
-            if (selectedTile === "repairStation") {
+            if (selectedTile === "upgradeStation") {
+                upgradeStationCount++;
+                const key = `upgradeStation${upgradeStationCount}`;
+                setCell(x, y, key);
+            } else if (selectedTile === "repairStation") {
                 repairStationCount++;
                 const key = `repairStation${repairStationCount}`;
                 setCell(x, y, key);
@@ -606,7 +613,7 @@
             };
 
             const mission = {
-                version: "0.0.6",
+                version: "0.0.7",
                 key: missionKeyEl.value || "mission_1",
                 name: missionNameEl.value || "",
                 energyCost: Number(energyCostEl.value) || 0,
@@ -668,6 +675,7 @@
             for (const k in enemies) delete enemies[k];
             enemyCount = 0;
             repairStationCount = 0;
+            upgradeStationCount = 0;
             renderGrid();
             renderEnemyList();
         };
