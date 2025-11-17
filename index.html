@@ -134,7 +134,7 @@
 </head>
 
 <body>
-<h1 class="mb-4">Iron Giants Mission Creation Tool v0.0.7</h1>
+<h1 class="mb-4">Iron Giants Mission Creation Tool v0.0.8</h1>
 <div class="row g-3">
     <div class="col-md-5">
         <div class="panel">
@@ -260,6 +260,19 @@
                 </div>
             </div>
 
+            <div class="mb-3">
+                <label class="form-label">Location</label>
+                <div class="row g-2 mb-2">
+                    <div class="col">
+                        <label class="form-label">X</label>
+                        <input type="number" id="locX" class="form-control form-control-sm" value="0" />
+                    </div>
+                    <div class="col">
+                        <label class="form-label">Y</label>
+                        <input type="number" id="locY" class="form-control form-control-sm" value="0" />
+                    </div>
+                </div>
+            </div>
 
             <div class="mb-3">
                 <label class="form-label">Grid size</label>
@@ -609,11 +622,16 @@
                         min: Number(document.getElementById("ncVoidMin").value),
                         max: Number(document.getElementById("ncVoidMax").value)
                     }
-                }
+                },
+            };
+
+            const location = {
+                X: Number(document.getElementById("locX").value),
+                Y: Number(document.getElementById("locY").value)
             };
 
             const mission = {
-                version: "0.0.7",
+                version: "0.0.8",
                 key: missionKeyEl.value || "mission_1",
                 name: missionNameEl.value || "",
                 energyCost: Number(energyCostEl.value) || 0,
@@ -623,7 +641,8 @@
                 gridHeight: gridH,
                 grid: outGrid,
                 enemies: enemiesOut,
-                rewards
+                rewards,
+                location: location
             };
 
             // Format rewards manually to keep them compact
@@ -688,6 +707,11 @@
             missionNameEl.value = data.name || "";
             energyCostEl.value = data.energyCost || 0;
             elementEl.value = data.element || "Physical";
+
+            if (data.location) {
+                document.getElementById("locX").value = data.location.X ?? 0;
+                document.getElementById("locY").value = data.location.Y ?? 0;
+            }
 
             const r = data.rewards;
             if (r) {
