@@ -134,7 +134,7 @@
 </head>
 
 <body>
-<h1 class="mb-4">Iron Giants Mission Creation Tool v0.0.8</h1>
+<h1 class="mb-4">Iron Giants Mission Creation Tool v0.0.9</h1>
 <div class="row g-3">
     <div class="col-md-5">
         <div class="panel">
@@ -258,10 +258,18 @@
                                placeholder="VoidStone Max"/>
                     </div>
                 </div>
+
+                <div class="row g-2 mb-2 mt-2">
+                    <div class="col">
+                        <h6>Experience</h6>
+                        <input type="number" id="experience" class="form-control form-control-sm" value="0"
+                               placeholder="Experience"/>
+                    </div>
+                </div>
             </div>
 
             <div class="mb-3">
-                <label class="form-label">Location</label>
+                <h6>Location</h6>
                 <div class="row g-2 mb-2">
                     <div class="col">
                         <label class="form-label">X</label>
@@ -623,6 +631,7 @@
                         max: Number(document.getElementById("ncVoidMax").value)
                     }
                 },
+                "experience": Number(document.getElementById("experience").value),
             };
 
             const location = {
@@ -631,7 +640,7 @@
             };
 
             const mission = {
-                version: "0.0.8",
+                version: "0.0.9",
                 key: missionKeyEl.value || "mission_1",
                 name: missionNameEl.value || "",
                 energyCost: Number(energyCostEl.value) || 0,
@@ -659,7 +668,8 @@
         "Aetherium": ${r.normalClear.Aetherium},
         "Crytite": { "min": ${r.normalClear.Crytite.min}, "max": ${r.normalClear.Crytite.max} },
         "VoidStone": { "min": ${r.normalClear.VoidStone.min}, "max": ${r.normalClear.VoidStone.max} }
-      }
+      },
+      "experience": ${r.experience}
     }`;
             }
 
@@ -731,6 +741,9 @@
                 document.getElementById("ncCrytiteMax").value = nc.Crytite.max;
                 document.getElementById("ncVoidMin").value = nc.VoidStone.min;
                 document.getElementById("ncVoidMax").value = nc.VoidStone.max;
+
+                document.getElementById("experience").value = r.experience;
+                
                 document.getElementById("biome").value = data.biome || "Forest";
             }
 
